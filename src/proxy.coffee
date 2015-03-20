@@ -24,7 +24,10 @@ udpRelay = require('./udprelay')
 fs = require("fs")
 path = require("path")
 utils = require('./utils')
-inet = require('./inet')
+inet = require('inet')
+os = require("os")
+
+localAddr = ""
 
 inetNtoa = (buf) ->
   buf[0] + "." + buf[1] + "." + buf[2] + "." + buf[3]
@@ -43,6 +46,7 @@ inetAton = (ipStr) ->
 
 connections = 0
 
+
 createServer = (port, timeout)->
   
   udpRelay.createServer(port, timeout)
@@ -56,6 +60,7 @@ createServer = (port, timeout)->
     addrLen = 0
     remoteAddr = null
     remotePort = null
+    
     utils.debug "connections: #{connections}"
     clean = ->
       utils.debug "clean"
@@ -93,6 +98,7 @@ createServer = (port, timeout)->
           addrtype = data[3]
           if cmd is 1
             # TCP
+
           else if cmd is 3
             # UDP
             utils.info "UDP assc request from #{connection.localAddress}:#{connection.localPort}"
@@ -137,7 +143,7 @@ createServer = (port, timeout)->
           buf.writeInt16BE 2222, 8
           connection.write buf
           # connect remote server
-          remote = net.connect(remotePort, remoteAddr, ->
+          remote = net.connect({port:remotePort, host:remoteAddr, localAddress:localAddr, family: "IPv4"}, ->
             utils.info "connecting #{remoteAddr}:#{remotePort}"
             i = 0
   
@@ -239,6 +245,9 @@ createServer = (port, timeout)->
 
 exports.createServer = createServer
 exports.main = ->  
+  tmpInterface = os.networkInterfaces()["MultiVPN"][0]
+  
+  localAddr = tmpInterface.address
   console.log(utils.version)
   configFromArgs = utils.parseArgs()
   configPath = 'config.json'
