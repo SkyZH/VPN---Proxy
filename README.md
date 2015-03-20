@@ -1,35 +1,55 @@
-socks5-proxy
+VPN-->Proxy
 ===========
 
-A simple socks5 proxy with TCP and UDP support.
+A socks5 proxy server. Based on clowwindy's socks5 proxy.
+
+This software can convert VPN into Socks5 Proxy for Windows 8.1.
 
 Usage
 -----------
 
-Download the lastest Node stable release. You can find them [here](http://nodejs.org/). Don't just use master branch of
+1. Download the lastest Node stable release. You can find them [here](http://nodejs.org/). Don't just use master branch of
 Node source code from Github! It's not stable.
 
-Create a file named `config.json`, with the following content.
+2. Clone this project.
 
-    {
-        "local_port":1080,
-        "timeout":600
-    }
+3. Create a file named `config.json` in '`./VPN---Proxy/src`, with the following content.
 
-Explaination of the fields:
+        {
+            "local_port":1080,
+            "timeout":600
+        }
+    
+    And the Proxy Server will Run at the port `1080`
 
-    local_port      local port
-    timeout         in seconds
+4. After installing the lastest Node.js stable release, open CMD by pressing `WinKey+R`, input `cmd` and then press enter.
 
-`cd` into the directory of `config.json`. Run `bin/socks5` on your server. To run it in the background, run
-`nohup bin/socks5 > log &`.
+    You may be able to install Coffee by entering `npm install coffee`
 
-Change the proxy setting in your browser into
+5. Navigate to Control Panel > Network and Sharing Center > Change Adapter Settings and Create a VPN connection.
 
-    protocol: socks5
-    hostname: 127.0.0.1
-    port:     your local_port
+   NOTICE THE VPN NAME! You'd better change it into `MultiVPN`
 
-License
------------------
-MIT
+   Right click on the VPN connection, then choose Properties.
+   
+   Select the Networking tab
+   
+   Select Internet Protocol Version 4 (TCP/IPv4) and click Properties
+   
+   Click Advanced
+   
+   Uncheck "Use default gateway on remote network" and Click OK.
+   
+6. Create the shortcut of `RunProxy.bat` and Set the Properties of the shortcut so that you can run it as administer.
+
+7. Edit RunProxy.bat (Change the path of proxy.coffee)
+
+8. Connect to VPN in Network and Sharing Center. Then run RunProxy.bat
+
+9. Set the network settings in your web broswer. 
+
+        protocol: socks5
+        hostname: 127.0.0.1
+        port:     your local_port
+
+10. Then you can surf the Internet using VPN through Socks5 Proxy.
