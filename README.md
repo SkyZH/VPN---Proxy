@@ -13,7 +13,7 @@ Node source code from Github! It's not stable.
 
 2. Clone this project.
 
-3. Create a file named `config.json` in '`./VPN---Proxy/src`, with the following content.
+3. Create a file named `config.json` in '`./VPN---Proxy/bin`, with the following content.
 
         {
             "local_port":1080,
@@ -24,12 +24,16 @@ Node source code from Github! It's not stable.
 
 4. After installing the lastest Node.js stable release, open CMD by pressing `WinKey+R`, input `cmd` and then press enter.
 
-    You may be able to install Coffee by entering `npm install coffee`
+    You may be able to install Coffee by entering `npm install -g coffee`
     
-    You may install inet by entering `npm install inet`
+    You may install inet by entering `npm install -g inet`
 
-5. Navigate to Control Panel > Network and Sharing Center > Change Adapter Settings and Create a VPN connection.
+5. Navigate to Control Panel > Network and Sharing Center > Change Adapter Settings and Create some VPN connections.
 
+   Then Open REGEDIT, go to HKEY_LOCAL_MACHINE > SYSTEM > CurrentControlSet > Class > {4d36e972-e325-11ce-bfc1-08002be10318} > 0021 (or 0020, 0022, etc)
+   
+   Change MaxWanEndpoints to a certain number which depends on how many VPNs you will use.
+   
    NOTICE THE VPN NAME! You'd better change it into `MultiVPN`
 
    Right click on the VPN connection, then choose Properties.

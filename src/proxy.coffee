@@ -1,33 +1,13 @@
-# Copyright (c) 2012 clowwindy
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-
 net = require("net")
-udpRelay = require('./udprelay')
+udpRelay = require('../lib/udprelay')
 fs = require("fs")
 path = require("path")
-utils = require('./utils')
-inet = require('inet')
+utils = require('../lib/utils')
+inet = require('../lib/inet')
 os = require("os")
+exec = require('child_process').exec
 
-localAddr = ""
+localAddr = []
 
 inetNtoa = (buf) ->
   buf[0] + "." + buf[1] + "." + buf[2] + "." + buf[3]
@@ -143,8 +123,9 @@ createServer = (port, timeout)->
           buf.writeInt16BE 2222, 8
           connection.write buf
           # connect remote server
-          remote = net.connect({port:remotePort, host:remoteAddr, localAddress:localAddr, family: "IPv4"}, ->
-            utils.info "connecting #{remoteAddr}:#{remotePort}"
+          __localAddr = localAddr[Math.floor(Math.random()*localAddr.length)]
+          remote = net.connect({port:remotePort, host:remoteAddr, localAddress:__localAddr, family: "IPv4"}, ->
+            utils.info "connecting #{remoteAddr}:#{remotePort} through #{__localAddr}"
             i = 0
   
             while i < cachedPieces.length
@@ -245,9 +226,10 @@ createServer = (port, timeout)->
 
 exports.createServer = createServer
 exports.main = ->  
-  tmpInterface = os.networkInterfaces()["MultiVPN"][0]
+  tmpInterfaces = os.networkInterfaces()
   
-  localAddr = tmpInterface.address
+  localAddr = (value[0].address for item,value of tmpInterfaces when item.match('MultiVPN') != null)
+  exec "netsh interface ipv4 add address name=\"" + item + "\" gateway=\"127.0.0.1\" gwmetric=1 store=\"active\"" for item,value of tmpInterfaces when item.match('MultiVPN') != null
   console.log(utils.version)
   configFromArgs = utils.parseArgs()
   configPath = 'config.json'

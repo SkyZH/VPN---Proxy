@@ -1,5 +1,3 @@
 @echo off
-echo Set VPN Gateway...
-netsh interface ipv4 add address name="MultiVPN" gateway="127.0.0.1" gwmetric=1 store="active"
 echo Run Socks5 Proxy...
-coffee "E:\socks5_proxy-master\src\proxy.coffee"
+node "E:\VPN-Proxy\bin\proxy.js"
