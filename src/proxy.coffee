@@ -229,7 +229,7 @@ exports.main = ->
   tmpInterfaces = os.networkInterfaces()
   
   localAddr = (value[0].address for item,value of tmpInterfaces when item.match('MultiVPN') != null)
-  exec "netsh interface ipv4 add address name=\"" + item + "\" gateway=\"127.0.0.1\" gwmetric=1 store=\"active\"" for item,value of tmpInterfaces when item.match('MultiVPN') != null
+  exec "netsh interface ipv4 add address name=\"" + item + "\" gateway=\"127.0.0.1\" gwmetric=20 store=\"active\"" for item,value of tmpInterfaces when item.match('MultiVPN') != null
   console.log(utils.version)
   configFromArgs = utils.parseArgs()
   configPath = 'config.json'
